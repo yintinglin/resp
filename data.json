@@ -4,13 +4,14 @@
     "week": 46,
     "week_start": "2026-11-15",
     "week_end": "2026-11-21",
-    "retrieved_at": "2026-11-24 13:27",
+    "retrieved_at": "2026-11-24 23:05",
     "timezone": "Asia/Taipei",
     "forecast_method": "阻尼趨勢 Holt 法（對數尺度，最近 16 週，往後 4 週）的探索性預測，陰影為未校準的粗估區間，並非 TimesFM",
     "forecast_not_timesfm": true,
     "wow_hold_threshold": 0.05,
     "pct_definition": "與前兩週平均相比",
     "er_definition": "急診人次 = 門診+急診 − 門診（次級健保）",
+    "other_share_definition": "LARS 未公布送驗總檢體數。佔比分母為同週六項重點病原（Influenza、SARS-CoV-2、RSV、Adeno、S. pneumoniae、Parainfluenza）陽性檢體合計。",
     "cors": "NIDSS 未回傳 Access-Control-Allow-Origin，GitHub Pages 前端無法直接抓取，需週更 data.json",
     "unavailable": [],
     "sources": [
@@ -767,10 +768,36 @@
     "deaths_by_death_week": 0
   },
   "other": {
-    "rsv": 44,
-    "adenovirus": 33,
-    "s_pneumoniae": 81,
-    "parainfluenza": 0
+    "rsv": {
+      "count": 44,
+      "prior_week": 44,
+      "delta": 0,
+      "share_of_key_positives_pct": 3.6
+    },
+    "adenovirus": {
+      "count": 33,
+      "prior_week": 47,
+      "delta": -14,
+      "share_of_key_positives_pct": 2.7
+    },
+    "s_pneumoniae": {
+      "count": 81,
+      "prior_week": 80,
+      "delta": 1,
+      "share_of_key_positives_pct": 6.7
+    },
+    "parainfluenza": {
+      "count": 0,
+      "prior_week": 2,
+      "delta": -2,
+      "share_of_key_positives_pct": 0.0
+    },
+    "denominator": {
+      "key": "key_pathogen_positives",
+      "label": "六項重點病原陽性檢體合計",
+      "value": 1215,
+      "note": "LARS 未公布送驗總檢體數。佔比分母為同週六項重點病原（Influenza、SARS-CoV-2、RSV、Adeno、S. pneumoniae、Parainfluenza）陽性檢體合計。"
+    }
   },
   "chart_x_ticks": [
     {

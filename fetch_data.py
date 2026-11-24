@@ -519,6 +519,46 @@ def build_pathogen_chart(week_map: dict, latest: tuple[int, int], chart_end: tup
     return points, weeks
 
 
+KEY_URI_PATHOGENS = (
+    "Influenza",
+    "SARS-CoV-2",
+    "RSV",
+    "Adeno",
+    "S. pneumoniae",
+    "Parainfluenza",
+)
+
+OTHER_SHARE_NOTE = (
+    "LARS 未公布送驗總檢體數。佔比分母為同週六項重點病原"
+    "（Influenza、SARS-CoV-2、RSV、Adeno、S. pneumoniae、Parainfluenza）陽性檢體合計。"
+)
+
+
+def count_delta(current, prev) -> int | None:
+    """Week-over-week change in counts. 0 is a real value (unchanged)."""
+    if current is None or prev is None:
+        return None
+    return int(current) - int(prev)
+
+
+def share_pct(count, denominator) -> float | None:
+    """Percentage of denominator, 1 decimal. None if the denominator is missing or 0."""
+    if count is None or denominator is None or denominator == 0:
+        return None
+    return round(100.0 * float(count) / float(denominator), 1)
+
+
+def pathogen_card(series: dict, latest: tuple[int, int], prev: tuple[int, int], denom: int | None) -> dict:
+    current = value_at(series, latest)
+    prior = value_at(series, prev)
+    return {
+        "count": current,
+        "prior_week": prior,
+        "delta": count_delta(current, prior),
+        "share_of_key_positives_pct": share_pct(current, denom),
+    }
+
+
 def value_at(m: dict, yw: tuple[int, int]) -> int | None:
     return m.get(yw)
 
@@ -677,14 +717,30 @@ def main() -> int:
     except Exception as e:
         raise RuntimeError(f"COVID 死亡資料擷取失敗（NIDSS 版型可能已改）：{e}") from e
 
+    # LARS URI publishes positive counts only, not total specimens tested.
+    key_positive_total = 0
+    for name in KEY_URI_PATHOGENS:
+        n = value_at(uri.get(name) or {}, latest)
+        if n is None:
+            raise RuntimeError(f"LARS {name} has no value for latest week {latest}")
+        key_positive_total += n
+
     other = {
-        "rsv": value_at(uri.get("RSV") or {}, latest),
-        "adenovirus": value_at(uri.get("Adeno") or {}, latest),
-        "s_pneumoniae": value_at(uri.get("S. pneumoniae") or {}, latest),
-        "parainfluenza": value_at(uri.get("Parainfluenza") or {}, latest),
+        "rsv": pathogen_card(uri["RSV"], latest, prev, key_positive_total),
+        "adenovirus": pathogen_card(uri["Adeno"], latest, prev, key_positive_total),
+        "s_pneumoniae": pathogen_card(uri["S. pneumoniae"], latest, prev, key_positive_total),
+        "parainfluenza": pathogen_card(uri["Parainfluenza"], latest, prev, key_positive_total),
+        "denominator": {
+            "key": "key_pathogen_positives",
+            "label": "六項重點病原陽性檢體合計",
+            "value": key_positive_total,
+            "note": OTHER_SHARE_NOTE,
+        },
     }
     for k, v in other.items():
-        if v is None:
+        if k == "denominator":
+            continue
+        if v.get("count") is None:
             raise RuntimeError(f"LARS {k} has no value for latest week {latest}")
 
     latest_sun = week_sunday(*latest)
@@ -706,6 +762,7 @@ def main() -> int:
             "wow_hold_threshold": HOLD_THRESHOLD,
             "pct_definition": "與前兩週平均相比",
             "er_definition": "急診人次 = 門診+急診 − 門診（次級健保）",
+            "other_share_definition": OTHER_SHARE_NOTE,
             "cors": "NIDSS 未回傳 Access-Control-Allow-Origin，GitHub Pages 前端無法直接抓取，需週更 data.json",
             "unavailable": unavailable,
             "sources": sources,
@@ -901,6 +958,22 @@ def _self_test() -> int:
     leftovers = list(tmpdir.glob("*.tmp"))
     if leftovers:
         failures.append(f"atomic write left tmp files: {leftovers}")
+
+    if count_delta(44, 44) != 0:
+        failures.append("unchanged week should be delta 0, not None")
+    if count_delta(44, 39) != 5 or count_delta(33, 47) != -14:
+        failures.append("count_delta sign or magnitude is wrong")
+    if count_delta(10, None) is not None or count_delta(None, 10) is not None:
+        failures.append("count_delta should be None when a week is missing")
+    if share_pct(44, 1215) != 3.6:
+        failures.append(f"share_pct 44/1215 should be 3.6, got {share_pct(44, 1215)}")
+    if share_pct(0, 1215) != 0.0:
+        failures.append("share_pct of 0 should be 0.0")
+    if share_pct(10, 0) is not None or share_pct(10, None) is not None:
+        failures.append("share_pct should be None when denominator is missing or 0")
+    card = pathogen_card({(2026, 46): 44, (2026, 45): 44}, (2026, 46), (2026, 45), 1215)
+    if card != {"count": 44, "prior_week": 44, "delta": 0, "share_of_key_positives_pct": 3.6}:
+        failures.append(f"pathogen_card fixture mismatch: {card}")
 
     if failures:
         for f in failures:
