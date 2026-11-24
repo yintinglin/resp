@@ -1,0 +1,69 @@
+# Auto-refresh data.json from Taiwan CDC NIDSS.
+#
+# NIDSS updates LARS, RODS and NHI secondary statistics early every
+# Monday and Tuesday morning (清晨), Asia/Taipei (UTC+8). Notifiable
+# COVID severe/death counts update daily at 08:30 Taipei, but this
+# weekly report is aligned to the last complete LARS week, so we
+# fetch on the same Mon/Tue cadence.
+#
+# Taipei times → UTC cron (minute 17, off the hour, to reduce GitHub
+# schedule delay/skips):
+#   Mon 07:17  =  Sun 23:17 UTC   (after the early-morning refresh)
+#   Mon 12:17  =  Mon 04:17 UTC   (same-day retry if the new week is not out yet)
+#   Tue 07:17  =  Mon 23:17 UTC
+#   Tue 12:17  =  Tue 04:17 UTC   (next-day retry)
+#
+# fetch_data.py exits non-zero and leaves the existing data.json
+# untouched if NIDSS cannot be parsed. It also leaves the file
+# untouched when only the retrieval timestamp would have changed,
+# so this workflow commits only when the epidemiological content
+# actually changes.
+
+name: Update weekly data
+
+on:
+  schedule:
+    - cron: "17 23 * * 0"
+    - cron: "17 4 * * 1"
+    - cron: "17 23 * * 1"
+    - cron: "17 4 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-weekly-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch NIDSS data
+        run: python3 fetch_data.py
+
+      - name: Commit data.json if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          if git diff --staged --quiet; then
+            echo "data.json unchanged"
+            exit 0
+          fi
+          git commit -m "chore: update respiratory weekly data"
+          git pull --rebase
+          git push

@@ -1,0 +1,802 @@
+{
+  "meta": {
+    "year": 2026,
+    "week": 46,
+    "week_start": "2026-11-15",
+    "week_end": "2026-11-21",
+    "retrieved_at": "2026-11-24 13:27",
+    "timezone": "Asia/Taipei",
+    "forecast_method": "阻尼趨勢 Holt 法（對數尺度，最近 16 週，往後 4 週）的探索性預測，陰影為未校準的粗估區間，並非 TimesFM",
+    "forecast_not_timesfm": true,
+    "wow_hold_threshold": 0.05,
+    "pct_definition": "與前兩週平均相比",
+    "er_definition": "急診人次 = 門診+急診 − 門診（次級健保）",
+    "cors": "NIDSS 未回傳 Access-Control-Allow-Origin，GitHub Pages 前端無法直接抓取，需週更 data.json",
+    "unavailable": [],
+    "sources": [
+      {
+        "name": "疾管署 LARS 流感病毒陽性檢體",
+        "url": "https://nidss.cdc.gov.tw/misc/lars?id=flu",
+        "update": "每週一、二清晨"
+      },
+      {
+        "name": "疾管署 LARS 重點呼吸道病原體陽性檢體",
+        "url": "https://nidss.cdc.gov.tw/misc/lars?id=uri",
+        "update": "每週一、二清晨"
+      },
+      {
+        "name": "次級健保資料 門診及門診+急診就診人次（急診＝門急診−門診）",
+        "url": "https://nidss.cdc.gov.tw/Cdcwnh/Cdcwnh01?disease=4",
+        "update": "每週一、二清晨"
+      },
+      {
+        "name": "新冠併發重症（依發病週）",
+        "url": "https://nidss.cdc.gov.tw/nndss/disease?id=19SC",
+        "update": "法定傳染病統計每日上午 8:30 更新；本頁採與 LARS 同一完整週"
+      },
+      {
+        "name": "新冠併發重症死亡（依死亡週）",
+        "url": "https://nidss.cdc.gov.tw/nndss/deadmap?id=19SC",
+        "update": "法定傳染病統計每日上午 8:30 更新；本頁採與 LARS 同一完整週"
+      }
+    ],
+    "links": {
+      "lars": "https://nidss.cdc.gov.tw/misc/lars?id=uri",
+      "nhi": "https://nidss.cdc.gov.tw/Cdcwnh/Cdcwnh01?disease=4",
+      "covid_severe": "https://nidss.cdc.gov.tw/nndss/disease?id=19SC",
+      "covid_deaths": "https://nidss.cdc.gov.tw/nndss/deadmap?id=19SC"
+    }
+  },
+  "headline": "流感較上週持平；COVID 較上週下降。",
+  "flu": {
+    "positives": 995,
+    "a": 978,
+    "b": 16,
+    "untyped": 1,
+    "pct_vs_prior_2w_avg": -12.1,
+    "prior_week": 1003,
+    "trend_word": "持平",
+    "forecast_next_week_label": "第 47 週",
+    "forecast_next_week": 912,
+    "forecast_next_week_lo": 728,
+    "forecast_next_week_hi": 1143,
+    "points": [
+      {
+        "year": 2026,
+        "week": 21,
+        "year_week": "202621",
+        "label": "W21",
+        "observed": 402,
+        "ma3": 402.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 22,
+        "year_week": "202622",
+        "label": "W22",
+        "observed": 375,
+        "ma3": 388.5,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 23,
+        "year_week": "202623",
+        "label": "W23",
+        "observed": 366,
+        "ma3": 381.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 24,
+        "year_week": "202624",
+        "label": "W24",
+        "observed": 485,
+        "ma3": 408.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 25,
+        "year_week": "202625",
+        "label": "W25",
+        "observed": 553,
+        "ma3": 468.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 26,
+        "year_week": "202626",
+        "label": "W26",
+        "observed": 769,
+        "ma3": 602.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 27,
+        "year_week": "202627",
+        "label": "W27",
+        "observed": 1032,
+        "ma3": 784.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 28,
+        "year_week": "202628",
+        "label": "W28",
+        "observed": 924,
+        "ma3": 908.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 29,
+        "year_week": "202629",
+        "label": "W29",
+        "observed": 993,
+        "ma3": 983.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 30,
+        "year_week": "202630",
+        "label": "W30",
+        "observed": 1273,
+        "ma3": 1063.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 31,
+        "year_week": "202631",
+        "label": "W31",
+        "observed": 1297,
+        "ma3": 1187.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 32,
+        "year_week": "202632",
+        "label": "W32",
+        "observed": 1228,
+        "ma3": 1266.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 33,
+        "year_week": "202633",
+        "label": "W33",
+        "observed": 1200,
+        "ma3": 1241.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 34,
+        "year_week": "202634",
+        "label": "W34",
+        "observed": 1534,
+        "ma3": 1320.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 35,
+        "year_week": "202635",
+        "label": "W35",
+        "observed": 1922,
+        "ma3": 1552.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 36,
+        "year_week": "202636",
+        "label": "W36",
+        "observed": 2481,
+        "ma3": 1979.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 37,
+        "year_week": "202637",
+        "label": "W37",
+        "observed": 2463,
+        "ma3": 2288.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 38,
+        "year_week": "202638",
+        "label": "W38",
+        "observed": 2737,
+        "ma3": 2560.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 39,
+        "year_week": "202639",
+        "label": "W39",
+        "observed": 2698,
+        "ma3": 2632.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 40,
+        "year_week": "202640",
+        "label": "W40",
+        "observed": 2525,
+        "ma3": 2653.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 41,
+        "year_week": "202641",
+        "label": "W41",
+        "observed": 2154,
+        "ma3": 2459.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 42,
+        "year_week": "202642",
+        "label": "W42",
+        "observed": 2009,
+        "ma3": 2229.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 43,
+        "year_week": "202643",
+        "label": "W43",
+        "observed": 1575,
+        "ma3": 1912.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 44,
+        "year_week": "202644",
+        "label": "W44",
+        "observed": 1260,
+        "ma3": 1614.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 45,
+        "year_week": "202645",
+        "label": "W45",
+        "observed": 1003,
+        "ma3": 1279.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 46,
+        "year_week": "202646",
+        "label": "W46",
+        "observed": 995,
+        "ma3": 1086.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 47,
+        "year_week": "202647",
+        "label": "W47",
+        "observed": null,
+        "ma3": null,
+        "forecast": 912.0,
+        "forecast_lo": 727.5,
+        "forecast_hi": 1143.1
+      },
+      {
+        "year": 2026,
+        "week": 48,
+        "year_week": "202648",
+        "label": "W48",
+        "observed": null,
+        "ma3": null,
+        "forecast": 858.8,
+        "forecast_lo": 623.9,
+        "forecast_hi": 1182.2
+      },
+      {
+        "year": 2026,
+        "week": 49,
+        "year_week": "202649",
+        "label": "W49",
+        "observed": null,
+        "ma3": null,
+        "forecast": 818.0,
+        "forecast_lo": 553.0,
+        "forecast_hi": 1209.8
+      },
+      {
+        "year": 2026,
+        "week": 50,
+        "year_week": "202650",
+        "label": "W50",
+        "observed": null,
+        "ma3": null,
+        "forecast": 786.3,
+        "forecast_lo": 500.3,
+        "forecast_hi": 1235.5
+      }
+    ]
+  },
+  "covid": {
+    "positives": 62,
+    "prior_week": 71,
+    "prior_week_number": 45,
+    "pct_vs_prior_2w_avg": -10.1,
+    "trend_word": "下降",
+    "forecast_next_week_label": "第 47 週",
+    "forecast_next_week": 54,
+    "forecast_next_week_lo": 42,
+    "forecast_next_week_hi": 70,
+    "points": [
+      {
+        "year": 2026,
+        "week": 21,
+        "year_week": "202621",
+        "label": "W21",
+        "observed": 34,
+        "ma3": 34.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 22,
+        "year_week": "202622",
+        "label": "W22",
+        "observed": 29,
+        "ma3": 31.5,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 23,
+        "year_week": "202623",
+        "label": "W23",
+        "observed": 45,
+        "ma3": 36.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 24,
+        "year_week": "202624",
+        "label": "W24",
+        "observed": 68,
+        "ma3": 47.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 25,
+        "year_week": "202625",
+        "label": "W25",
+        "observed": 139,
+        "ma3": 84.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 26,
+        "year_week": "202626",
+        "label": "W26",
+        "observed": 166,
+        "ma3": 124.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 27,
+        "year_week": "202627",
+        "label": "W27",
+        "observed": 293,
+        "ma3": 199.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 28,
+        "year_week": "202628",
+        "label": "W28",
+        "observed": 459,
+        "ma3": 306.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 29,
+        "year_week": "202629",
+        "label": "W29",
+        "observed": 825,
+        "ma3": 525.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 30,
+        "year_week": "202630",
+        "label": "W30",
+        "observed": 1233,
+        "ma3": 839.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 31,
+        "year_week": "202631",
+        "label": "W31",
+        "observed": 1643,
+        "ma3": 1233.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 32,
+        "year_week": "202632",
+        "label": "W32",
+        "observed": 1707,
+        "ma3": 1527.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 33,
+        "year_week": "202633",
+        "label": "W33",
+        "observed": 1596,
+        "ma3": 1648.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 34,
+        "year_week": "202634",
+        "label": "W34",
+        "observed": 1447,
+        "ma3": 1583.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 35,
+        "year_week": "202635",
+        "label": "W35",
+        "observed": 1264,
+        "ma3": 1435.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 36,
+        "year_week": "202636",
+        "label": "W36",
+        "observed": 1042,
+        "ma3": 1251.0,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 37,
+        "year_week": "202637",
+        "label": "W37",
+        "observed": 872,
+        "ma3": 1059.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 38,
+        "year_week": "202638",
+        "label": "W38",
+        "observed": 718,
+        "ma3": 877.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 39,
+        "year_week": "202639",
+        "label": "W39",
+        "observed": 544,
+        "ma3": 711.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 40,
+        "year_week": "202640",
+        "label": "W40",
+        "observed": 381,
+        "ma3": 547.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 41,
+        "year_week": "202641",
+        "label": "W41",
+        "observed": 276,
+        "ma3": 400.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 42,
+        "year_week": "202642",
+        "label": "W42",
+        "observed": 170,
+        "ma3": 275.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 43,
+        "year_week": "202643",
+        "label": "W43",
+        "observed": 104,
+        "ma3": 183.33,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 44,
+        "year_week": "202644",
+        "label": "W44",
+        "observed": 67,
+        "ma3": 113.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 45,
+        "year_week": "202645",
+        "label": "W45",
+        "observed": 71,
+        "ma3": 80.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 46,
+        "year_week": "202646",
+        "label": "W46",
+        "observed": 62,
+        "ma3": 66.67,
+        "forecast": null,
+        "forecast_lo": null,
+        "forecast_hi": null
+      },
+      {
+        "year": 2026,
+        "week": 47,
+        "year_week": "202647",
+        "label": "W47",
+        "observed": null,
+        "ma3": null,
+        "forecast": 54.1,
+        "forecast_lo": 41.8,
+        "forecast_hi": 70.0
+      },
+      {
+        "year": 2026,
+        "week": 48,
+        "year_week": "202648",
+        "label": "W48",
+        "observed": null,
+        "ma3": null,
+        "forecast": 48.0,
+        "forecast_lo": 33.3,
+        "forecast_hi": 69.1
+      },
+      {
+        "year": 2026,
+        "week": 49,
+        "year_week": "202649",
+        "label": "W49",
+        "observed": null,
+        "ma3": null,
+        "forecast": 43.0,
+        "forecast_lo": 27.4,
+        "forecast_hi": 67.3
+      },
+      {
+        "year": 2026,
+        "week": 50,
+        "year_week": "202650",
+        "label": "W50",
+        "observed": null,
+        "ma3": null,
+        "forecast": 38.9,
+        "forecast_lo": 23.0,
+        "forecast_hi": 65.2
+      }
+    ]
+  },
+  "visits": {
+    "ili_oped": {
+      "count": 85408,
+      "pct_vs_prior_2w_avg": -3.4,
+      "prior_week": 86813,
+      "prior2_week": 90089
+    },
+    "ili_er": {
+      "count": 6782,
+      "pct_vs_prior_2w_avg": -10.4,
+      "prior_week": 7370,
+      "prior2_week": 7769
+    },
+    "covid_oped": {
+      "count": 1398,
+      "pct_vs_prior_2w_avg": -12.9,
+      "prior_week": 1456,
+      "prior2_week": 1755
+    },
+    "covid_er": {
+      "count": 58,
+      "pct_vs_prior_2w_avg": -39.3,
+      "prior_week": 73,
+      "prior2_week": 118
+    }
+  },
+  "covid_severe": {
+    "cases_by_onset_week": 6,
+    "deaths_by_death_week": 0
+  },
+  "other": {
+    "rsv": 44,
+    "adenovirus": 33,
+    "s_pneumoniae": 81,
+    "parainfluenza": 0
+  },
+  "chart_x_ticks": [
+    {
+      "year": 2026,
+      "week": 21,
+      "label": "W21"
+    },
+    {
+      "year": 2026,
+      "week": 29,
+      "label": "W29"
+    },
+    {
+      "year": 2026,
+      "week": 37,
+      "label": "W37"
+    },
+    {
+      "year": 2026,
+      "week": 46,
+      "label": "W46"
+    },
+    {
+      "year": 2026,
+      "week": 50,
+      "label": "W50"
+    }
+  ]
+}

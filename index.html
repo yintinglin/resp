@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>呼吸道病毒週報</title>
+  <meta name="description" content="台灣每週呼吸道病毒監測摘要，彙整疾管署實驗室監測、健保門急診就診人次、COVID 重症與死亡及重點病原體趨勢。">
+  <style>
+    :root {
+      --bg: #F4EFE6;
+      --surface: #FFFFFF;
+      --surface-tint: #FAF7F1;
+      --header-bg: #16382E;
+      --header-text: #FFFFFF;
+      --flu: #1F8A80;
+      --flu-pill-bg: #E3F4F0;
+      --flu-pill-text: #1B7A6E;
+      --covid: #B4452F;
+      --covid-pill-bg: #F8E8E4;
+      --covid-pill-text: #B4452F;
+      --ink: #1C1C1C;
+      --muted: #6A655C;
+      --border: #E8E2D8;
+      --grid: #D9D3C8;
+      --line: #1A1A1A;
+      --shadow: 0 1px 3px rgba(28, 28, 28, 0.06);
+      --radius: 15px;
+      --font-serif: "Noto Serif CJK TC", "Noto Serif TC", "Source Han Serif TC", PMingLiU, "Songti TC", serif;
+      --font-sans: "Noto Sans CJK TC", "Noto Sans TC", "Source Han Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .page-status {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 64px 20px;
+      text-align: center;
+      font-size: 15.5px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .page-status.is-error {
+      color: var(--covid);
+    }
+
+    .stale-banner {
+      margin: 0 0 12px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background-color: #FAF2E4;
+      border: 1px solid #E6D3B3;
+      color: #82541C;
+      font-size: 12.5px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    /* Header */
+    .report-header {
+      position: relative;
+      width: 100%;
+      background-color: var(--header-bg);
+      color: var(--header-text);
+      overflow: hidden;
+      padding: 24px 0 28px;
+    }
+
+    .header-inner {
+      position: relative;
+    }
+
+    .header-watermark {
+      position: absolute;
+      top: -28px;
+      right: -8px;
+      font-family: var(--font-serif);
+      font-size: 144px;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: rgba(255, 255, 255, 0.12);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.78);
+      margin: 0 0 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .header-title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: 0.02em;
+      color: #FFFFFF;
+    }
+
+    .header-headline {
+      margin: 10px 0 0;
+      font-size: 14.5px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+
+    /* Main content */
+    main {
+      padding-top: 18px;
+      padding-bottom: 10px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* Pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.35;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pill--flu {
+      background-color: var(--flu-pill-bg);
+      color: var(--flu-pill-text);
+    }
+
+    .pill--covid {
+      background-color: var(--covid-pill-bg);
+      color: var(--covid-pill-text);
+    }
+
+    .pill--muted {
+      background-color: #EFECE5;
+      color: var(--muted);
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-card {
+      position: relative;
+      overflow: hidden;
+      padding: 15px 13px 14px;
+    }
+
+    .summary-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    .summary-card--flu::before {
+      background-color: var(--flu);
+    }
+
+    .summary-card--covid::before {
+      background-color: var(--covid);
+    }
+
+    .summary-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .summary-label {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .summary-label--flu {
+      color: var(--flu);
+    }
+
+    .summary-label--covid {
+      color: var(--covid);
+    }
+
+    .summary-metric {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .summary-num {
+      font-family: var(--font-serif);
+      font-size: 31px;
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary-num.is-missing {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .summary-unit {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .summary-sub {
+      margin: 0;
+      font-size: 10.5px;
+      line-height: 1.45;
+      color: var(--muted);
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary-sub .nb {
+      white-space: nowrap;
+    }
+
+    .summary-caption {
+      margin: 8px 2px 0;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    /* Sections */
+    .report-section {
+      margin-top: 26px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+    }
+
+    .section-note {
+      font-size: 11.5px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* Legend */
+    .trend-legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 14px;
+      margin: -2px 0 12px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatches {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .legend-sq {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 1.5px;
+    }
+
+    .legend-sq--flu {
+      background-color: var(--flu);
+    }
+
+    .legend-sq--covid {
+      background-color: var(--covid);
+    }
+
+    .legend-band {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background-color: rgba(106, 101, 92, 0.22);
+      border: 1px solid rgba(106, 101, 92, 0.28);
+    }
+
+    .legend-line {
+      display: inline-block;
+      width: 16px;
+      height: 0;
+      border-top: 2px solid var(--line);
+    }
+
+    .legend-line--dashed {
+      border-top-style: dashed;
+    }
+
+    /* Chart Cards */
+    .chart-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chart-card {
+      padding: 14px 14px 10px;
+    }
+
+    .chart-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4px 8px;
+      margin-bottom: 6px;
+    }
+
+    .chart-title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .chart-title--flu {
+      color: var(--flu);
+    }
+
+    .chart-title--covid {
+      color: var(--covid);
+    }
+
+    .chart-forecast-note {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chart-forecast-num {
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .chart-forecast-num--flu {
+      color: var(--flu);
+    }
+
+    .chart-forecast-num--covid {
+      color: var(--covid);
+    }
+
+    .chart-wrap {
+      width: 100%;
+    }
+
+    .chart-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+      font-family: var(--font-sans);
+    }
+
+    .chart-svg text {
+      font-family: var(--font-sans);
+    }
+
+    /* Visits 2x2 */
+    .visits-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .visit-card {
+      padding: 13px 13px 12px;
+    }
+
+    .visit-label {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .visit-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .visit-num {
+      font-family: var(--font-serif);
+      font-size: 23px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .visit-num.is-missing {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .severe-bar {
+      margin-top: 10px;
+      padding: 9px 13px;
+      background-color: var(--surface-tint);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 12.5px;
+      color: var(--ink);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .severe-dot {
+      width: 6px;
+      height: 6px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background-color: var(--covid);
+      flex: 0 0 auto;
+    }
+
+    .severe-body {
+      min-width: 0;
+    }
+
+    .severe-text strong {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 13.5px;
+    }
+
+    .severe-note {
+      margin: 2px 0 0;
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    /* Other Pathogens */
+    .other-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .other-card {
+      padding: 12px 6px 11px;
+      text-align: center;
+    }
+
+    .other-label {
+      margin: 0;
+      font-size: 11px;
+      line-height: 1.3;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .other-num {
+      margin: 6px 0 0;
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .other-num.is-missing {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* Footer */
+    .report-footer {
+      margin-top: 28px;
+      padding: 16px 0 34px;
+    }
+
+    .footer-inner {
+      border-top: 1px solid #DFD9CE;
+      padding-top: 15px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin: 0 0 11px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: #B8B1A5;
+      transition: color 0.15s ease, text-decoration-color 0.15s ease;
+    }
+
+    .footer-links a:hover,
+    .footer-links a:focus-visible {
+      color: var(--ink);
+      text-decoration-color: var(--ink);
+    }
+
+    .footer-note {
+      margin: 0;
+      font-size: 11.5px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    @media (max-width: 360px) {
+      .wrap {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+      .header-title {
+        font-size: 29px;
+      }
+      .summary-num {
+        font-size: 27px;
+      }
+      .visit-num {
+        font-size: 20px;
+      }
+      .other-label {
+        font-size: 10.5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-status" id="page-status" role="status" aria-live="polite">載入中…</div>
+
+  <div id="report-root" hidden>
+  <header class="report-header">
+    <div class="wrap header-inner">
+      <div class="header-watermark" id="hdr-watermark" aria-hidden="true"></div>
+      <div class="header-content">
+        <p class="header-meta" id="hdr-meta"></p>
+        <h1 class="header-title">呼吸道病毒週報</h1>
+        <p class="header-headline" id="hdr-headline"></p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="stale-banner" id="stale-banner" role="status" hidden>資料可能未更新</div>
+
+    <section aria-label="本週陽性檢體摘要">
+      <div class="summary-grid">
+        <article class="card summary-card summary-card--flu">
+          <div class="summary-top">
+            <span class="summary-label summary-label--flu">流感</span>
+            <span class="pill pill--flu" id="sum-flu-pill"></span>
+          </div>
+          <div class="summary-metric">
+            <span class="summary-num" id="sum-flu-pos"></span>
+            <span class="summary-unit" id="sum-flu-unit">件陽性</span>
+          </div>
+          <p class="summary-sub" id="sum-flu-sub"></p>
+        </article>
+
+        <article class="card summary-card summary-card--covid">
+          <div class="summary-top">
+            <span class="summary-label summary-label--covid">COVID</span>
+            <span class="pill pill--covid" id="sum-covid-pill"></span>
+          </div>
+          <div class="summary-metric">
+            <span class="summary-num" id="sum-covid-pos"></span>
+            <span class="summary-unit" id="sum-covid-unit">件陽性</span>
+          </div>
+          <p class="summary-sub" id="sum-covid-sub"></p>
+        </article>
+      </div>
+      <p class="summary-caption">百分比與前兩週平均相比。顏色代表疾病，不代表好壞。</p>
+    </section>
+
+    <section class="report-section" aria-labelledby="sec-trend-title">
+      <div class="section-head">
+        <h2 class="section-title" id="sec-trend-title">檢出趨勢</h2>
+      </div>
+      <div class="trend-legend" aria-label="圖表圖例">
+        <span class="legend-item">
+          <span class="legend-swatches" aria-hidden="true">
+            <span class="legend-sq legend-sq--flu"></span>
+            <span class="legend-sq legend-sq--covid"></span>
+          </span>
+          <span>實測</span>
+        </span>
+        <span class="legend-item">
+          <span class="legend-line" aria-hidden="true"></span>
+          <span>三週平均</span>
+        </span>
+        <span class="legend-item">
+          <span class="legend-line legend-line--dashed" aria-hidden="true"></span>
+          <span>預測虛線</span>
+        </span>
+        <span class="legend-item">
+          <span class="legend-band" aria-hidden="true"></span>
+          <span>陰影＝粗估區間（未校準）</span>
+        </span>
+      </div>
+
+      <div class="chart-stack">
+        <article class="card chart-card">
+          <div class="chart-head">
+            <h3 class="chart-title chart-title--flu">流感</h3>
+            <p class="chart-forecast-note" id="flu-forecast-note"></p>
+          </div>
+          <div class="chart-wrap" id="chart-flu"></div>
+        </article>
+
+        <article class="card chart-card">
+          <div class="chart-head">
+            <h3 class="chart-title chart-title--covid">COVID</h3>
+            <p class="chart-forecast-note" id="covid-forecast-note"></p>
+          </div>
+          <div class="chart-wrap" id="chart-covid"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="report-section" aria-labelledby="sec-visits-title">
+      <div class="section-head">
+        <h2 class="section-title" id="sec-visits-title">門急診就診</h2>
+        <span class="section-note">人次 · 較前兩週平均</span>
+      </div>
+
+      <div class="visits-grid">
+        <article class="card visit-card">
+          <p class="visit-label">類流感 · 門急診</p>
+          <div class="visit-row">
+            <span class="visit-num" id="v-ili-oped-num"></span>
+            <span class="pill pill--flu" id="v-ili-oped-pill"></span>
+          </div>
+        </article>
+
+        <article class="card visit-card">
+          <p class="visit-label">類流感 · 急診</p>
+          <div class="visit-row">
+            <span class="visit-num" id="v-ili-er-num"></span>
+            <span class="pill pill--flu" id="v-ili-er-pill"></span>
+          </div>
+        </article>
+
+        <article class="card visit-card">
+          <p class="visit-label">COVID · 門急診</p>
+          <div class="visit-row">
+            <span class="visit-num" id="v-covid-oped-num"></span>
+            <span class="pill pill--covid" id="v-covid-oped-pill"></span>
+          </div>
+        </article>
+
+        <article class="card visit-card">
+          <p class="visit-label">COVID · 急診</p>
+          <div class="visit-row">
+            <span class="visit-num" id="v-covid-er-num"></span>
+            <span class="pill pill--covid" id="v-covid-er-pill"></span>
+          </div>
+        </article>
+      </div>
+
+      <div class="severe-bar" id="covid-severe-bar" aria-label="COVID 重症與死亡統計">
+        <span class="severe-dot" aria-hidden="true"></span>
+        <div class="severe-body">
+          <div class="severe-text" id="covid-severe-line"></div>
+          <p class="severe-note">依發病週，近期數字會隨通報延遲上修。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="report-section" aria-labelledby="sec-other-title">
+      <div class="section-head">
+        <h2 class="section-title" id="sec-other-title">其他病原</h2>
+      </div>
+      <div class="other-grid">
+        <article class="card other-card">
+          <p class="other-label">RSV</p>
+          <p class="other-num" id="o-rsv"></p>
+        </article>
+        <article class="card other-card">
+          <p class="other-label">腺病毒</p>
+          <p class="other-num" id="o-adeno"></p>
+        </article>
+        <article class="card other-card">
+          <p class="other-label">肺炎鏈球菌</p>
+          <p class="other-num" id="o-spneu"></p>
+        </article>
+        <article class="card other-card">
+          <p class="other-label">副流感</p>
+          <p class="other-num" id="o-para"></p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="report-footer">
+    <div class="wrap">
+      <div class="footer-inner">
+        <ul class="footer-links" id="footer-links">
+          <li><a id="link-lars" href="#" target="_blank" rel="noopener noreferrer">疾管署 LARS</a></li>
+          <li><a id="link-nhi" href="#" target="_blank" rel="noopener noreferrer">健保就診</a></li>
+          <li><a id="link-severe" href="#" target="_blank" rel="noopener noreferrer">COVID 重症及死亡</a></li>
+        </ul>
+        <p class="footer-note" id="footer-note"></p>
+      </div>
+    </div>
+  </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const MISSING = '暫無資料';
+      const SVG_NS = 'http://www.w3.org/2000/svg';
+
+      function hasNum(v) {
+        return v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
+      }
+
+      function fmtInt(v) {
+        if (!hasNum(v)) return MISSING;
+        return Math.round(Number(v)).toLocaleString('en-US');
+      }
+
+      function fmtPct(v) {
+        if (!hasNum(v)) return MISSING;
+        const n = Number(v);
+        const abs = Math.abs(n).toFixed(1);
+        if (n < 0) return '\u2193 ' + abs + '%';
+        if (n > 0) return '\u2191 ' + abs + '%';
+        return '0.0%';
+      }
+
+      function fmtMD(iso) {
+        if (typeof iso !== 'string') return '';
+        const parts = iso.split('-');
+        if (parts.length !== 3) return '';
+        return parts[1].padStart(2, '0') + '/' + parts[2].padStart(2, '0');
+      }
+
+      function setPill(el, val, diseaseClass) {
+        if (!el) return;
+        el.classList.remove('pill--flu', 'pill--covid', 'pill--muted');
+        if (!hasNum(val)) {
+          el.textContent = MISSING;
+          el.classList.add('pill--muted');
+          return;
+        }
+        el.textContent = fmtPct(val);
+        el.classList.add(diseaseClass);
+      }
+
+      function setNumericEl(el, val, unitEl) {
+        if (!el) return;
+        if (!hasNum(val)) {
+          el.textContent = MISSING;
+          el.classList.add('is-missing');
+          if (unitEl) unitEl.style.display = 'none';
+        } else {
+          el.textContent = fmtInt(val);
+          el.classList.remove('is-missing');
+          if (unitEl) unitEl.style.display = '';
+        }
+      }
+
+      function getPriorWeekNumber(data) {
+        if (data && data.covid && hasNum(data.covid.prior_week_number)) {
+          return Number(data.covid.prior_week_number);
+        }
+        const pts = data && data.covid && Array.isArray(data.covid.points) ? data.covid.points : [];
+        const obs = pts.filter(function (p) { return hasNum(p.observed); });
+        if (obs.length >= 2 && hasNum(obs[obs.length - 2].week)) {
+          return Number(obs[obs.length - 2].week);
+        }
+        const wk = data && data.meta && hasNum(data.meta.week) ? Number(data.meta.week) : null;
+        if (wk === null || wk <= 1) return null;
+        return wk - 1;
+      }
+
+      function svgEl(tag, attrs, text) {
+        const node = document.createElementNS(SVG_NS, tag);
+        if (attrs) {
+          Object.keys(attrs).forEach(function (k) {
+            node.setAttribute(k, String(attrs[k]));
+          });
+        }
+        if (text !== undefined && text !== null) {
+          node.textContent = String(text);
+        }
+        return node;
+      }
+
+      function renderTrendChart(containerId, opts) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+
+        const points = Array.isArray(opts.points) ? opts.points : [];
+        const W = 368;
+        const H = 212;
+
+        const svg = svgEl('svg', {
+          class: 'chart-svg',
+          viewBox: '0 0 ' + W + ' ' + H,
+          role: 'img',
+          'aria-label': opts.ariaLabel
+        });
+        svg.appendChild(svgEl('title', null, opts.ariaLabel));
+
+        if (!points.length) {
+          svg.appendChild(svgEl('text', {
+            x: W / 2,
+            y: H / 2,
+            'text-anchor': 'middle',
+            'dominant-baseline': 'middle',
+            fill: '#6A655C',
+            'font-size': 13
+          }, MISSING));
+          container.appendChild(svg);
+          return;
+        }
+
+        const padTop = 18;
+        const padBottom = 28;
+        const padLeft = 50;
+        const padRight = 18;
+        const plotW = W - padLeft - padRight;
+        const plotH = H - padTop - padBottom;
+        const n = points.length;
+        const step = plotW / n;
+        const barW = Math.max(3, Math.min(8, step * 0.68));
+
+        // Determine y-axis max and ticks (preserve reference ticks unless data exceeds)
+        let dataMax = 0;
+        points.forEach(function (p) {
+          if (hasNum(p.observed)) dataMax = Math.max(dataMax, Number(p.observed));
+          if (hasNum(p.ma3)) dataMax = Math.max(dataMax, Number(p.ma3));
+          if (hasNum(p.forecast_hi)) dataMax = Math.max(dataMax, Number(p.forecast_hi));
+          if (hasNum(p.forecast)) dataMax = Math.max(dataMax, Number(p.forecast));
+        });
+
+        let yMax = opts.defaultYMax;
+        let yTicks = opts.defaultYTicks;
+        if (dataMax > yMax) {
+          const stepY = Math.ceil((dataMax / 4) / 250) * 250;
+          yMax = stepY * 4;
+          yTicks = [0, stepY, stepY * 2, stepY * 3, yMax];
+        }
+
+        function cx(i) {
+          return padLeft + (i + 0.5) * step;
+        }
+
+        function cy(val) {
+          const clamped = Math.max(0, Math.min(yMax, Number(val)));
+          return padTop + plotH * (1 - clamped / yMax);
+        }
+
+        // Defs: hatch pattern + plot clipPath
+        const defs = svgEl('defs');
+        const hatchId = 'hatch-' + opts.key;
+        const clipId = 'clip-' + opts.key;
+
+        const pattern = svgEl('pattern', {
+          id: hatchId,
+          width: 6,
+          height: 6,
+          patternUnits: 'userSpaceOnUse',
+          patternTransform: 'rotate(45)'
+        });
+        pattern.appendChild(svgEl('rect', { width: 6, height: 6, fill: '#FAF7F1' }));
+        pattern.appendChild(svgEl('line', {
+          x1: 0, y1: 0, x2: 0, y2: 6,
+          stroke: '#E4DDD1',
+          'stroke-width': 1.2
+        }));
+        defs.appendChild(pattern);
+
+        const clip = svgEl('clipPath', { id: clipId });
+        clip.appendChild(svgEl('rect', {
+          x: padLeft,
+          y: padTop,
+          width: plotW,
+          height: plotH
+        }));
+        defs.appendChild(clip);
+        svg.appendChild(defs);
+
+        // Locate last observed week and forecast weeks
+        let lastObsIdx = -1;
+        points.forEach(function (p, i) {
+          if (hasNum(p.observed)) lastObsIdx = i;
+        });
+
+        const fcIndices = [];
+        points.forEach(function (p, i) {
+          if (!hasNum(p.observed) && hasNum(p.forecast)) fcIndices.push(i);
+        });
+
+        // 1. Future hatched area
+        const hasFuture = lastObsIdx >= 0 && lastObsIdx < n - 1;
+        const dividerX = hasFuture ? (padLeft + (lastObsIdx + 1) * step) : null;
+        if (hasFuture) {
+          svg.appendChild(svgEl('rect', {
+            x: dividerX.toFixed(2),
+            y: padTop,
+            width: Math.max(0, (padLeft + plotW - dividerX)).toFixed(2),
+            height: plotH,
+            fill: 'url(#' + hatchId + ')'
+          }));
+        }
+
+        // 2. Horizontal grid lines & Y-axis tick labels
+        yTicks.forEach(function (tickVal) {
+          const y = cy(tickVal);
+          const isZero = tickVal === 0;
+          svg.appendChild(svgEl('line', {
+            x1: padLeft,
+            y1: y.toFixed(2),
+            x2: padLeft + plotW,
+            y2: y.toFixed(2),
+            stroke: isZero ? '#CFC8BC' : '#E7E1D6',
+            'stroke-width': isZero ? 1 : 0.8
+          }));
+          svg.appendChild(svgEl('text', {
+            x: padLeft - 6,
+            y: y.toFixed(2),
+            'text-anchor': 'end',
+            'dominant-baseline': 'middle',
+            fill: '#6A655C',
+            'font-size': 11,
+            'font-family': 'var(--font-sans)'
+          }, fmtInt(tickVal)));
+        });
+
+        // Y-axis rotated label「件數」
+        const yLabelX = 9;
+        const yLabelY = padTop + plotH / 2;
+        svg.appendChild(svgEl('text', {
+          x: yLabelX,
+          y: yLabelY.toFixed(2),
+          'text-anchor': 'middle',
+          'dominant-baseline': 'middle',
+          transform: 'rotate(-90 ' + yLabelX + ' ' + yLabelY.toFixed(2) + ')',
+          fill: '#6A655C',
+          'font-size': 11,
+          'letter-spacing': '0.12em',
+          'font-family': 'var(--font-sans)'
+        }, '件數'));
+
+        // Clipped plot layers
+        const plotGroup = svgEl('g', { 'clip-path': 'url(#' + clipId + ')' });
+
+        // 3. Forecast confidence interval band
+        if (fcIndices.length > 0) {
+          const upper = [];
+          const lower = [];
+
+          if (lastObsIdx >= 0) {
+            const anchorP = points[lastObsIdx];
+            const anchorVal = hasNum(anchorP.ma3) ? Number(anchorP.ma3) : Number(anchorP.observed);
+            upper.push(cx(lastObsIdx).toFixed(2) + ',' + cy(anchorVal).toFixed(2));
+            lower.push(cx(lastObsIdx).toFixed(2) + ',' + cy(anchorVal).toFixed(2));
+          }
+
+          fcIndices.forEach(function (idx) {
+            const p = points[idx];
+            const hi = hasNum(p.forecast_hi) ? Number(p.forecast_hi) : Number(p.forecast);
+            const lo = hasNum(p.forecast_lo) ? Number(p.forecast_lo) : Number(p.forecast);
+            upper.push(cx(idx).toFixed(2) + ',' + cy(hi).toFixed(2));
+            lower.push(cx(idx).toFixed(2) + ',' + cy(lo).toFixed(2));
+          });
+
+          if (upper.length >= 2) {
+            const polyPoints = upper.concat(lower.reverse()).join(' ');
+            plotGroup.appendChild(svgEl('polygon', {
+              points: polyPoints,
+              fill: opts.intervalFill
+            }));
+          }
+        }
+
+        // 4. Observed bars
+        points.forEach(function (p, i) {
+          if (!hasNum(p.observed)) return;
+          const val = Math.max(0, Number(p.observed));
+          const yTop = cy(val);
+          const barH = Math.max(0, padTop + plotH - yTop);
+          if (barH <= 0) return;
+          const xLeft = cx(i) - barW / 2;
+          const isLast = i === lastObsIdx;
+          plotGroup.appendChild(svgEl('rect', {
+            x: xLeft.toFixed(2),
+            y: yTop.toFixed(2),
+            width: barW.toFixed(2),
+            height: barH.toFixed(2),
+            rx: 1,
+            fill: opts.color,
+            opacity: isLast ? 1 : 0.86
+          }));
+        });
+
+        // 5. Vertical dotted "now" divider
+        if (hasFuture) {
+          plotGroup.appendChild(svgEl('line', {
+            x1: dividerX.toFixed(2),
+            y1: padTop,
+            x2: dividerX.toFixed(2),
+            y2: padTop + plotH,
+            stroke: '#8D867B',
+            'stroke-width': 1,
+            'stroke-dasharray': '2 3'
+          }));
+        }
+
+        // 6. 3-week average line (observed weeks only)
+        const maCoords = [];
+        points.forEach(function (p, i) {
+          if (hasNum(p.observed) && hasNum(p.ma3)) {
+            maCoords.push(cx(i).toFixed(2) + ',' + cy(p.ma3).toFixed(2));
+          }
+        });
+        if (maCoords.length >= 2) {
+          const maPath = maCoords.join(' ');
+          plotGroup.appendChild(svgEl('polyline', {
+            points: maPath,
+            fill: 'none',
+            stroke: 'rgba(255,255,255,0.55)',
+            'stroke-width': 3.2,
+            'stroke-linejoin': 'round',
+            'stroke-linecap': 'round'
+          }));
+          plotGroup.appendChild(svgEl('polyline', {
+            points: maPath,
+            fill: 'none',
+            stroke: '#1A1A1A',
+            'stroke-width': 1.8,
+            'stroke-linejoin': 'round',
+            'stroke-linecap': 'round'
+          }));
+        }
+
+        // 7. Dashed forecast line (connected from last observed ma3/observed)
+        if (fcIndices.length > 0) {
+          const fcCoords = [];
+          if (lastObsIdx >= 0) {
+            const anchorP = points[lastObsIdx];
+            const anchorVal = hasNum(anchorP.ma3) ? Number(anchorP.ma3) : Number(anchorP.observed);
+            fcCoords.push(cx(lastObsIdx).toFixed(2) + ',' + cy(anchorVal).toFixed(2));
+          }
+          fcIndices.forEach(function (idx) {
+            fcCoords.push(cx(idx).toFixed(2) + ',' + cy(points[idx].forecast).toFixed(2));
+          });
+          if (fcCoords.length >= 2) {
+            plotGroup.appendChild(svgEl('polyline', {
+              points: fcCoords.join(' '),
+              fill: 'none',
+              stroke: '#1A1A1A',
+              'stroke-width': 1.75,
+              'stroke-dasharray': '4 3',
+              'stroke-linejoin': 'round',
+              'stroke-linecap': 'round'
+            }));
+          }
+        }
+
+        svg.appendChild(plotGroup);
+
+        // 8. Last observed bar value callout (outside clip so it never clips at top)
+        if (lastObsIdx >= 0) {
+          const lastP = points[lastObsIdx];
+          const obsVal = Number(lastP.observed);
+          const maVal = hasNum(lastP.ma3) ? Number(lastP.ma3) : obsVal;
+          const topRefY = Math.min(cy(obsVal), cy(maVal));
+          const labelY = Math.max(11, topRefY - 7);
+          const labelX = cx(lastObsIdx) - 1;
+
+          svg.appendChild(svgEl('text', {
+            x: labelX.toFixed(2),
+            y: labelY.toFixed(2),
+            'text-anchor': 'middle',
+            fill: opts.color,
+            'font-size': 11,
+            'font-weight': 700,
+            'font-family': 'var(--font-sans)',
+            'paint-order': 'stroke',
+            stroke: '#FFFFFF',
+            'stroke-width': 3.5,
+            'stroke-linejoin': 'round'
+          }, fmtInt(obsVal)));
+        }
+
+        // 9. X-axis ticks from data.chart_x_ticks
+        const xTicks = Array.isArray(opts.xTicks) ? opts.xTicks : [];
+        xTicks.forEach(function (tk) {
+          const idx = points.findIndex(function (p) {
+            return Number(p.year) === Number(tk.year) && Number(p.week) === Number(tk.week);
+          });
+          if (idx < 0) return;
+
+          const x = cx(idx);
+          svg.appendChild(svgEl('line', {
+            x1: x.toFixed(2),
+            y1: padTop + plotH,
+            x2: x.toFixed(2),
+            y2: padTop + plotH + 4,
+            stroke: '#CFC8BC',
+            'stroke-width': 1
+          }));
+
+          let anchor = 'middle';
+          let tx = x;
+          if (idx === 0) {
+            anchor = 'start';
+            tx = padLeft;
+          }
+
+          svg.appendChild(svgEl('text', {
+            x: tx.toFixed(2),
+            y: padTop + plotH + 17,
+            'text-anchor': anchor,
+            fill: '#6A655C',
+            'font-size': 11,
+            'font-family': 'var(--font-sans)'
+          }, tk.label || points[idx].label || ''));
+        });
+
+        container.appendChild(svg);
+      }
+
+      function buildTrendAriaLabel(baseLabel, week, positives, pct) {
+        if (!hasNum(week) || !hasNum(positives) || !hasNum(pct)) {
+          return baseLabel;
+        }
+        const n = Number(pct);
+        let dir;
+        if (n > 0) {
+          dir = '升 ' + Math.abs(n).toFixed(1) + '%';
+        } else if (n < 0) {
+          dir = '降 ' + Math.abs(n).toFixed(1) + '%';
+        } else {
+          dir = '持平';
+        }
+        return baseLabel + '。第 ' + week + ' 週 ' + fmtInt(positives) + ' 件，較前兩週平均' + dir + '。';
+      }
+
+      function renderForecastNote(elId, label, numVal, accentClass, loVal, hiVal) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.innerHTML = '';
+        const weekPrefix = label ? String(label) : '下週';
+        if (!hasNum(numVal)) {
+          el.textContent = weekPrefix + '預測 ' + MISSING;
+          return;
+        }
+        el.appendChild(document.createTextNode(weekPrefix + '預測約 '));
+        const strong = document.createElement('span');
+        strong.className = 'chart-forecast-num ' + accentClass;
+        strong.textContent = fmtInt(numVal);
+        el.appendChild(strong);
+        if (hasNum(loVal) && hasNum(hiVal)) {
+          el.appendChild(document.createTextNode(' 件（約 ' + fmtInt(loVal) + '\u2013' + fmtInt(hiVal) + '，僅供參考）'));
+        } else {
+          el.appendChild(document.createTextNode(' 件（僅供參考）'));
+        }
+      }
+
+      function parseRetrievedAt(str) {
+        if (typeof str !== 'string') return null;
+        const trimmed = str.trim();
+        if (!trimmed) return null;
+        const m = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/);
+        if (m) {
+          const y = Number(m[1]);
+          const mo = Number(m[2]) - 1;
+          const d = Number(m[3]);
+          const hh = Number(m[4]);
+          const mm = Number(m[5]);
+          const ss = m[6] ? Number(m[6]) : 0;
+          return Date.UTC(y, mo, d, hh, mm, ss) - 8 * 60 * 60 * 1000;
+        }
+        const parsed = Date.parse(trimmed);
+        return Number.isFinite(parsed) ? parsed : null;
+      }
+
+      function updateStaleBanner(retrievedAt) {
+        const banner = document.getElementById('stale-banner');
+        if (!banner) return;
+        const ts = parseRetrievedAt(retrievedAt);
+        const NINE_DAYS_MS = 9 * 24 * 60 * 60 * 1000;
+        if (ts !== null && (Date.now() - ts) > NINE_DAYS_MS) {
+          banner.textContent = '資料可能未更新';
+          banner.hidden = false;
+        } else {
+          banner.hidden = true;
+        }
+      }
+
+      function setFooterLink(elId, url) {
+        const a = document.getElementById(elId);
+        if (!a) return;
+        if (url && typeof url === 'string') {
+          a.href = url;
+          a.style.display = '';
+        } else {
+          a.removeAttribute('href');
+          a.style.display = 'none';
+        }
+      }
+
+      function render(data) {
+        if (!data || typeof data !== 'object') return;
+        const meta = data.meta || {};
+        const flu = data.flu || {};
+        const covid = data.covid || {};
+        const visits = data.visits || {};
+        const severe = data.covid_severe || {};
+        const other = data.other || {};
+
+        // Header
+        const wm = document.getElementById('hdr-watermark');
+        if (wm) wm.textContent = hasNum(meta.week) ? String(meta.week) : '';
+
+        const metaEl = document.getElementById('hdr-meta');
+        if (metaEl) {
+          metaEl.innerHTML = '';
+          const weekStr = (hasNum(meta.year) ? meta.year + ' \u00B7 ' : '') +
+            (hasNum(meta.week) ? '第 ' + meta.week + ' 週' : MISSING);
+          const s1 = document.createElement('span');
+          s1.textContent = weekStr;
+          metaEl.appendChild(s1);
+
+          const mdStart = fmtMD(meta.week_start);
+          const mdEnd = fmtMD(meta.week_end);
+          if (mdStart && mdEnd) {
+            const s2 = document.createElement('span');
+            s2.textContent = mdStart + '\u2013' + mdEnd;
+            metaEl.appendChild(s2);
+          }
+        }
+
+        const headlineEl = document.getElementById('hdr-headline');
+        if (headlineEl) {
+          headlineEl.textContent = data.headline || MISSING;
+        }
+
+        // Summary: Flu
+        setPill(document.getElementById('sum-flu-pill'), flu.pct_vs_prior_2w_avg, 'pill--flu');
+        setNumericEl(
+          document.getElementById('sum-flu-pos'),
+          flu.positives,
+          document.getElementById('sum-flu-unit')
+        );
+        const fluSub = document.getElementById('sum-flu-sub');
+        if (fluSub) {
+          if (hasNum(flu.a) || hasNum(flu.b) || hasNum(flu.untyped)) {
+            fluSub.innerHTML =
+              '<span class="nb">A 型 ' + fmtInt(flu.a) + '</span>' +
+              ' \u00B7 ' +
+              '<span class="nb">B 型 ' + fmtInt(flu.b) + '</span>' +
+              ' \u00B7 ' +
+              '<span class="nb">未分型 ' + fmtInt(flu.untyped) + '</span>';
+          } else {
+            fluSub.textContent = MISSING;
+          }
+        }
+
+        // Summary: COVID
+        setPill(document.getElementById('sum-covid-pill'), covid.pct_vs_prior_2w_avg, 'pill--covid');
+        setNumericEl(
+          document.getElementById('sum-covid-pos'),
+          covid.positives,
+          document.getElementById('sum-covid-unit')
+        );
+        const covidSub = document.getElementById('sum-covid-sub');
+        if (covidSub) {
+          const priorWk = getPriorWeekNumber(data);
+          if (hasNum(covid.prior_week) && priorWk !== null) {
+            covidSub.textContent = '第 ' + priorWk + ' 週 ' + fmtInt(covid.prior_week) + ' 件';
+          } else if (priorWk !== null) {
+            covidSub.textContent = '第 ' + priorWk + ' 週 ' + MISSING;
+          } else {
+            covidSub.textContent = MISSING;
+          }
+        }
+
+        // Charts
+        renderForecastNote(
+          'flu-forecast-note',
+          flu.forecast_next_week_label,
+          flu.forecast_next_week,
+          'chart-forecast-num--flu',
+          flu.forecast_next_week_lo,
+          flu.forecast_next_week_hi
+        );
+        renderForecastNote(
+          'covid-forecast-note',
+          covid.forecast_next_week_label,
+          covid.forecast_next_week,
+          'chart-forecast-num--covid',
+          covid.forecast_next_week_lo,
+          covid.forecast_next_week_hi
+        );
+
+        renderTrendChart('chart-flu', {
+          key: 'flu',
+          ariaLabel: buildTrendAriaLabel('流感陽性檢體趨勢', meta.week, flu.positives, flu.pct_vs_prior_2w_avg),
+          points: flu.points,
+          xTicks: data.chart_x_ticks,
+          color: '#1F8A80',
+          intervalFill: 'rgba(31, 138, 128, 0.16)',
+          defaultYMax: 3000,
+          defaultYTicks: [0, 750, 1500, 2250, 3000]
+        });
+
+        renderTrendChart('chart-covid', {
+          key: 'covid',
+          ariaLabel: buildTrendAriaLabel('COVID 陽性檢體趨勢', meta.week, covid.positives, covid.pct_vs_prior_2w_avg),
+          points: covid.points,
+          xTicks: data.chart_x_ticks,
+          color: '#B4452F',
+          intervalFill: 'rgba(180, 69, 47, 0.16)',
+          defaultYMax: 2000,
+          defaultYTicks: [0, 500, 1000, 1500, 2000]
+        });
+
+        // Visits 2x2
+        const visitMap = [
+          { key: 'ili_oped', numId: 'v-ili-oped-num', pillId: 'v-ili-oped-pill', cls: 'pill--flu' },
+          { key: 'ili_er', numId: 'v-ili-er-num', pillId: 'v-ili-er-pill', cls: 'pill--flu' },
+          { key: 'covid_oped', numId: 'v-covid-oped-num', pillId: 'v-covid-oped-pill', cls: 'pill--covid' },
+          { key: 'covid_er', numId: 'v-covid-er-num', pillId: 'v-covid-er-pill', cls: 'pill--covid' }
+        ];
+        visitMap.forEach(function (item) {
+          const obj = visits[item.key] || {};
+          setNumericEl(document.getElementById(item.numId), obj.count);
+          setPill(document.getElementById(item.pillId), obj.pct_vs_prior_2w_avg, item.cls);
+        });
+
+        // COVID severe & deaths
+        const severeEl = document.getElementById('covid-severe-line');
+        const severeBar = document.getElementById('covid-severe-bar');
+        if (severeEl) {
+          severeEl.innerHTML = '';
+          const casesOk = hasNum(severe.cases_by_onset_week);
+          const deathsOk = hasNum(severe.deaths_by_death_week);
+          const weekSuffix = hasNum(meta.week) ? '（第 ' + meta.week + ' 週）' : '';
+
+          severeEl.appendChild(document.createTextNode('COVID 重症 '));
+          const cNode = document.createElement('strong');
+          cNode.textContent = casesOk ? fmtInt(severe.cases_by_onset_week) : MISSING;
+          severeEl.appendChild(cNode);
+          severeEl.appendChild(document.createTextNode((casesOk ? ' 例' : '') + ' \u00B7 死亡 '));
+          const dNode = document.createElement('strong');
+          dNode.textContent = deathsOk ? fmtInt(severe.deaths_by_death_week) : MISSING;
+          severeEl.appendChild(dNode);
+          if (deathsOk) {
+            severeEl.appendChild(document.createTextNode(' 例'));
+          }
+          if (weekSuffix) {
+            severeEl.appendChild(document.createTextNode(weekSuffix));
+          }
+
+          if (severeBar) {
+            const cText = casesOk ? fmtInt(severe.cases_by_onset_week) + ' 例' : MISSING;
+            const dText = deathsOk ? fmtInt(severe.deaths_by_death_week) + ' 例' : MISSING;
+            severeBar.setAttribute(
+              'aria-label',
+              'COVID 重症 ' + cText + '，死亡 ' + dText + weekSuffix + '。依發病週，近期數字會隨通報延遲上修。'
+            );
+          }
+        }
+
+        // Other pathogens (0 is valid)
+        setNumericEl(document.getElementById('o-rsv'), other.rsv);
+        setNumericEl(document.getElementById('o-adeno'), other.adenovirus);
+        setNumericEl(document.getElementById('o-spneu'), other.s_pneumoniae);
+        setNumericEl(document.getElementById('o-para'), other.parainfluenza);
+
+        // Footer links & note
+        const links = meta.links || {};
+        setFooterLink('link-lars', links.lars);
+        setFooterLink('link-nhi', links.nhi);
+        setFooterLink('link-severe', links.covid_severe || links.covid_deaths);
+
+        const footerNote = document.getElementById('footer-note');
+        if (footerNote) {
+          const retrieved = meta.retrieved_at ? String(meta.retrieved_at) : MISSING;
+          const method = meta.forecast_method
+            ? String(meta.forecast_method).replace(/。+$/, '')
+            : MISSING;
+          footerNote.textContent =
+            '資料擷取：' + retrieved + '（台北）。' +
+            '檢體件數、就診人次均非感染人數。' +
+            '急診人次由門急診減門診得出。' +
+            method + '。' +
+            '重症依發病週，死亡依死亡週。';
+        }
+
+        updateStaleBanner(meta.retrieved_at);
+      }
+
+      const pageStatus = document.getElementById('page-status');
+      const reportRoot = document.getElementById('report-root');
+
+      function showLoadError() {
+        if (reportRoot) reportRoot.hidden = true;
+        if (pageStatus) {
+          pageStatus.textContent = '資料載入失敗，請稍後再重新整理。';
+          pageStatus.classList.add('is-error');
+          pageStatus.setAttribute('role', 'alert');
+          pageStatus.hidden = false;
+        }
+      }
+
+      if (typeof window.fetch !== 'function') {
+        showLoadError();
+      } else {
+        fetch('./data.json', { cache: 'no-cache' })
+          .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+          })
+          .then(function (fresh) {
+            if (!fresh || typeof fresh !== 'object' || Array.isArray(fresh)) {
+              throw new Error('Invalid JSON');
+            }
+            if (pageStatus) {
+              pageStatus.hidden = true;
+              pageStatus.textContent = '';
+              pageStatus.classList.remove('is-error');
+            }
+            if (reportRoot) {
+              reportRoot.hidden = false;
+            }
+            render(fresh);
+          })
+          .catch(function () {
+            showLoadError();
+          });
+      }
+    })();
+  </script>
+</body>
+</html>
